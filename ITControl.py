@@ -4,10 +4,11 @@ import pandas as pd
 import os
 import datetime
 
-''' i have a separate file with the key for time stations, the file name is 
-"Api_key.txt" '''
+''' this is a tool to analize the information from the Timestation.com Api,
+this tool will look into posible cenarious like Employees forgoting to clock out, 
+if you clock in and out in lunch '''
 
-with open("Api_key.txt", "r") as file:
+with open("Api_key.txt", "r") as file: #  the key From the timestation API is save in a text file 
     key_api = file.read()
 
 class ItControl:
@@ -16,7 +17,6 @@ class ItControl:
 
     def __init__(self):
         self.today_date = datetime.date.today().strftime('%Y-%m-%d')
-        
         self.key_api = key_api
         self.code = 37
         self.location = input('Please input the Location \n\n->>>')
@@ -25,8 +25,10 @@ class ItControl:
         self.getting_data()
 
     def answer_selector(self):
-        
+        '''  this funtion allows the user to select different reports from the main view.'''
+
         def picker(answer):
+
             if not answer:
                 self.getting_data()
             elif answer.lower() == 'show':
@@ -56,6 +58,10 @@ class ItControl:
         picker(answer)
 
     def getting_data(self):
+        
+        ''' this is the main view. in here the code analize the information.
+        the code check first if the employees are currently working (In) and after that check if is in the location you previously type.
+        after that created a simple report to display the information. '''
 
         global data_current
         filter_data_in = self.raw_data['Status'].str.contains('In')
