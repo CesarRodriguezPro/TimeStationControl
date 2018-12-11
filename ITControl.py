@@ -67,8 +67,7 @@ class ItControl:
         filter_data_in = self.raw_data['Status'].str.contains('In')
         second_filter = self.raw_data[filter_data_in][['Name', 'Current Department', 'Primary Department', 'Device', 'Time', 'Date']]
         data_current = second_filter[(second_filter['Current Department'].str.contains(self.location))]
-        data_primary = second_filter[(second_filter['Primary Department'].str.contains(self.location))]
-           
+                   
         os.system('cls')
         print('last update on {}'.format(datetime.datetime.now().strftime('%H:%M:%S')))
         print('______________________________________________________________________________________________________________________________')
