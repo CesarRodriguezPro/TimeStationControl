@@ -8,8 +8,10 @@ import datetime
 this tool will look into posible cenarious like Employees forgoting to clock out, 
 if you clock in and out in lunch ETC'''
 
+
 with open("Api_key.txt", "r") as file: #  the key From the timestation API is save in a text file 
     key_api = file.read()
+
 
 class ItControl:
 
@@ -171,7 +173,6 @@ class ItControl:
         else:
             self.getting_data()
     
-        
     def still_on_employees(self, last_check_in):
 
         if last_check_in.empty:
