@@ -6,14 +6,14 @@ import datetime
 
 ''' this is a tool to analize the information from the Timestation.com Api,
 this tool will look into posible cenarious like Employees forgoting to clock out, 
-if you clock in and out in lunch '''
+if you clock in and out in lunch ETC'''
 
 with open("Api_key.txt", "r") as file: #  the key From the timestation API is save in a text file 
     key_api = file.read()
 
 class ItControl:
 
-    ''' This is to created a custom report for each job sites, this will display the current employees and '''
+    ''' This is to created a custom report for each job sites, this will display the current employees'''
 
     def __init__(self):
         self.today_date = datetime.date.today().strftime('%Y-%m-%d')
@@ -87,7 +87,7 @@ class ItControl:
 
     def data_from_days(self, date1, date2):
         
-        '''this take the information of the week '''
+        '''this download information from a range of dates. '''
         print(f'{date1}  -->  {date2} \n\n')
         code_42 = 42  # for regular week
         url_data_code_42 = f"https://api.mytimestation.com/v0.1/reports/?api_key={self.key_api}&Report_StartDate={date1}&Report_EndDate={date2}&id={code_42}&exportformat=csv"
@@ -106,6 +106,9 @@ class ItControl:
         return filter_data
 
     def hours_greater(self):
+        ''' This will display in the main view if employees has hours greater that 15,
+        if employees forgot to clock out the previous days this report will help to see those employees
+        '''
 
         today = datetime.date.today()
         #last_monday = today - datetime.timedelta(days=today.weekday())
@@ -133,10 +136,14 @@ class ItControl:
 
     def check_funtion(self):
 
-        # url = f"https://api.mytimestation.com/v0.1/reports/?api_key={self.key_api}&id={self.code}&exportformat=csv"
-        # raw_data = pd.read_csv(url)
-        filter_data_in = self.raw_data['Status'].str.contains('In')
-        second_filter = self.raw_data[filter_data_in][['Name', 'Current Department', 'Primary Department', 'Device', 'Time', 'Date']]
+        ''' this funtion helps to determent if employees are in the wrong locations.
+        also the data is recolected separatly to allow to refresh by pressing just "Enter", this allow to check the work
+        as you making correction.'''
+
+        url = f"https://api.mytimestation.com/v0.1/reports/?api_key={self.key_api}&id={self.code}&exportformat=csv"
+        raw_data = pd.read_csv(url)
+        filter_data_in = raw_data['Status'].str.contains('In')
+        second_filter = raw_data[filter_data_in][['Name', 'Current Department', 'Primary Department', 'Device', 'Time', 'Date']]
         data_current = second_filter[(second_filter['Current Department'].str.contains(self.location))]
         data_primary = second_filter[(second_filter['Primary Department'].str.contains(self.location))]
           
@@ -152,14 +159,19 @@ class ItControl:
         p = a.sort_values(['Current Department', 'Name'])
         
         if p.empty:
-            print('There is not information to display')
-            input('')
+            print('There is not information to display')    
         else:
             print(" ", p.to_string())
-            input('\nto go back press enter')
+
+        print('\n\n [+] - Type "back" for main Screen or Press "Enter" to refresh --> ')
+        answer = input('\nto go back press enter')
+
+        if not answer:
+            self.check_funtion()
+        else:
+            self.getting_data()
     
-        self.getting_data()
-  
+        
     def still_on_employees(self, last_check_in):
 
         if last_check_in.empty:
