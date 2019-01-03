@@ -8,9 +8,7 @@ import datetime
 this tool will look into posible cenarious like Employees forgoting to clock out, 
 if you clock in and out in lunch ETC'''
 
-
-with open("Api_key.txt", "r") as file: #  the key From the timestation API is save in a text file 
-    key_api = file.read()
+key_api = os.environ.get('Timestation_key')
 
 
 class ItControl:
